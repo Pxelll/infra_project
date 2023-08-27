@@ -22,7 +22,7 @@ resource "aws_launch_template" "EC2_template" {
     Name = var.ec2_name
   }
   security_group_names = [ var.security_group_name ]
-  user_data = filebase64(ansible.sh)
+  user_data = filebase64("ansible.sh")
 }
 
 #resource "aws_instance" "EC2_MACHINE" {
@@ -50,9 +50,9 @@ resource "aws_autoscaling_group" "group" {
 }
 
 resource "aws_default_subnet" "subnet_01" {
-  availability_zone = ["${var.aws_region}a"]
+  availability_zone = "${var.aws_region}a"
 }
 
 resource "aws_default_subnet" "subnet_02" {
-  availability_zone = ["${var.aws_region}b"]
+  availability_zone = "${var.aws_region}b"
 }
