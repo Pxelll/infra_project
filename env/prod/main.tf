@@ -4,8 +4,8 @@ module "aws-prod" {
   aws_region = "us-east-1" # posso trocar tambem a regiao mas nao tem necessidade para aprendizagem
   key = "aws-key-prod"
   ec2_name = "ec2_prod"
-}
-
-output "public_ip_prod" {
-  value = module.aws-prod.public_ip
+  security_group_name = "PROD"
+  max_ec2 = 10
+  min_ec2 = 1
+  group_name = "PROD"
 }

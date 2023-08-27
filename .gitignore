@@ -5,5 +5,7 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*
+env/prod/*key*
+env/dev/*key*
 
 *.pem
