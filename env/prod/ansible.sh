@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /home/ubuntu
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python3 get-pip-py
+sudo python3 get-pip.py
 sudo python3 -m pip install ansible
 tee -a playbook.yml > /dev/null <<EOT
 - hosts: localhost
@@ -56,4 +56,5 @@ tee -a playbook.yml > /dev/null <<EOT
   - name: server start
     shell: '. /home/ubuntu/tcc/venv/bin/activate; nohup python /home/ubuntu/tcc/manage.py runserver 0.0.0.0:8000 &'
 EOT
+ansible-playbook playbook.yml
 ansible-playbook playbook.yml

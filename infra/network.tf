@@ -18,6 +18,5 @@ resource "aws_security_group" "Sentinel_Fortress" {
 
   tags = {
     Name        = "Sentinel_Fortress"
-    environment = "Dev"
   }
 }
