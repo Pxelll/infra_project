@@ -8,4 +8,5 @@ module "aws-prod" {
   max_ec2             = 10
   min_ec2             = 1
   group_name          = "PROD"
+  production = true
 }

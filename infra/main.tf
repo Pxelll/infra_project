@@ -22,7 +22,7 @@ resource "aws_launch_template" "EC2_template" {
       Name = "${var.ec2_name}_"
     }
   security_group_names = [ var.security_group_name ]
-  user_data = filebase64("ansible.sh")
+  user_data = var.production ? ("ansible.sh") : "" #":" eh como se fosse um else
 }
 
 #resource "aws_instance" "EC2_MACHINE" {
@@ -47,7 +47,7 @@ resource "aws_autoscaling_group" "group" {
     id = aws_launch_template.EC2_template.id
     version = "$Latest"
   }
-  target_group_arns = [ aws_lb_target_group.Target_LoadBalancer.arn ]
+  target_group_arns = var.production ? [ aws_lb_target_group.Target_LoadBalancer[0].arn ] : []
 }
 
 resource "aws_default_subnet" "subnet_01" {
@@ -62,6 +62,7 @@ resource "aws_lb" "LoadBalancer" {
   internal = false
   subnets = [ aws_default_subnet.subnet_01.id, aws_default_subnet.subnet_02.id ]
   security_groups = [ aws_security_group.Sentinel_Fortress.id ]
+  count = var.production  ? 1 : 0
 }
 
 resource "aws_default_vpc" "default" { # usando a vpc padrao da aws (para criar uma propria eh mais complicado), essa sessao eh apenas para poder colocar a vpc no aws_lb_target_group
@@ -73,15 +74,17 @@ resource "aws_lb_target_group" "Target_LoadBalancer" {
   port = "8000"
   protocol = "HTTP" # porque a nossa aplicacao funciona via HTTP
   vpc_id = aws_default_vpc.default.id
+  count = var.production  ? 1 : 0
 }
 resource "aws_lb_listener" "LoadBalancer_entrance" {
-  load_balancer_arn = aws_lb.LoadBalancer.arn
+  load_balancer_arn = aws_lb.LoadBalancer[0].arn
   port = "8000"
   protocol = "HTTP"
   default_action {
     type = "forward"
-    target_group_arn = aws_lb_target_group.Target_LoadBalancer.arn
+    target_group_arn = aws_lb_target_group.Target_LoadBalancer[0].arn
   }
+  count = var.production  ? 1 : 0
 }
 
 resource "aws_autoscaling_policy" "prod_scalation" {
@@ -94,4 +97,5 @@ resource "aws_autoscaling_policy" "prod_scalation" {
     }
     target_value = 20.0
   }
+  count = var.production  ? 1 : 0
 }
